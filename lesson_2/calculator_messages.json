@@ -1,0 +1,29 @@
+{
+  "en" :{
+    "welcome" : "Welcome to the calculator!",
+    "firstNumber" : "Enter a first number: ",
+    "firstNumberInvalid" : "Hummm... that doesn't look like a valid number!\n Please enter a number: ",
+    "secondNumber" : "Enter a second number: ",
+    "secondNumberinvalid" : "Hummm... that doesn't look like a valid number!\n Please re-enter the second number: ",
+    "operatorQuestion" : "What operation would you like to do?\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "operatorQuestionInvalid" : "Your input isn't valid! Please choose one of the following:\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "newCalculationQuestion" : "Would you like to make anoter calculation? (y/n)",
+    "newCalculationQuestionInvalid" : "Your input isn't valid! Would you like to make another calculation? (y/n)",
+    "resultStart" : "The result is ",
+    "resultEnd" : " ."
+  },
+  "fr" : {
+    "welcome" : "Bienvenue au calculateur!",
+    "firstNumber" : "Ajouter votre premier numero: ",
+    "firstNumberInvalid" : "Hummm... that doesn't look like a valid number!\n Please enter a number: ",
+    "secondNumber" : "Ajouter votre deuxieme numero: ",
+    "secondNumberinvalid" : "Hummm... that doesn't look like a valid number!\n Please re-enter the second number: ",
+    "operatorQuestion" : "What operation would you like to do?\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "operatorQuestionInvalid" : "Your input isn't valid! Please choose one of the following:\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "newCalculationQuestion" : "Would you like to make anoter calculation? (y/n)",
+    "newCalculationQuestionInvalid" : "Your input isn't valid! Would you like to make another calculation? (y/n)",
+    "resultStart" : "The result is ",
+    "resultEnd" : " ."
+  
+  }
+}
