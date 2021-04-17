@@ -1,0 +1,20 @@
+{
+  "WELCOME" : "Welcome to the mortgage calculator\nPlease provide the following information: ",
+  "LOAN_AMOUNT" : "Loan Amount: ",
+  "LOAN_AMOUNT_WARN" : "Please provide a valid Loan Amount (ex: 2000): ",
+  "INTEREST_RATE" : "Interest Rate: ",
+  "INTEREST_RATE_WARN" : "Please provide a valid Interest Rate (ex: 6): ",
+  "INTEREST_RATE_WARN_0" : "Interest Rate must be 0.1 or higher: ",
+  "MONTHS_OR_YEAR" : "Would you like to enter the loan Duration in Months or Year?\nSelect: 1)MONTHS 2)YEAR: ",
+  "MONTHS_OR_YEAR_WARN" : "Please choose a valid loan Duration in Months or Year!\nSelect: Type 1 for Months or 2 for YEAR ",
+  "YEAR_LOAN_TERM" : "Loan Duration in Year: ",
+  "YEAR_LOAN_TERM_WARN" : "Please provide a valid Loan Duration in Year: (ex: 3): ",
+  "MOUTHS_LOAN_TERM" : "Loan Duration in Months: ",
+  "MOUTHS_LOAN_TERM_WARN" : "Please provide a valid Loan Duration in months: (ex: 36): ",
+  "NEW_CALCULATION" : "Would you like to make another loan calculation? (y/n): ",
+  "NEW_CALCULATION_WARN" : "Sorry, we didn't get that! To start a new calculation type 'Y'. To Exit type 'N': ",
+  "MONTHLY_PAYMENT" : "\nMonthly Payments: $",
+  "TOTAL_OF" : "Total of ",
+  "PAYMENTS" : "payments: $",
+  "TOTAL_INTEREST" : "Total Interest: $"
+}
