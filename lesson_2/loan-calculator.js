@@ -1,24 +1,21 @@
 const USER_IMPUT = require('readline-sync');
-
 const MSG = require('./loan_calculator.json');
 
 function prompt(msg) {
   return `=> ${msg}`;
 }
-
+function invalidNumber(num) {
+  return num.trimStart() === '' || Number(num) < 0 || Number.isNaN(Number(num));
+}
 // remove commas and other symboles in case user enter $20,000 or 5%, etc
 function clean(num) {
   return num.replace(/[ ,$%]/g, "");
 }
 
-function invalidNumber(num) {
-  return num.trimStart() === '' || Number(num) < 0 || Number.isNaN(Number(num));
-}
-
-let calculateAgain = 'y';
-
 //Welcome message
 console.log(prompt(MSG.WELCOME));
+
+let calculateAgain = 'y';
 
 while (calculateAgain === 'y' || calculateAgain === 'Y') {
   // Variables
