@@ -42,7 +42,7 @@ let calculateAgain = 'y';
 function newCalaculation() {
   calculateAgain = USER_IMPUT.question(prompt(MSG.NEW_CALCULATION));
   calculateAgain = calculateAgain.toLowerCase();
-  while (!['y', 'Y', 'n', 'N'].includes(calculateAgain)) {
+  while (!['y', 'n'].includes(calculateAgain)) {
     calculateAgain = USER_IMPUT.question(prompt(MSG.NEW_CALCULATION_WARN));
     calculateAgain = calculateAgain.toLowerCase();
   }
@@ -54,7 +54,6 @@ console.clear();
 console.log(prompt(MSG.WELCOME));
 
 while (calculateAgain === 'y') {
-  // Variables
   loanAmount = clean(USER_IMPUT.question(prompt(MSG.LOAN_AMOUNT)));
   while (invalidNumber(loanAmount)) {
     loanAmount = clean(USER_IMPUT.question(prompt(MSG.LOAN_AMOUNT_WARN)));
