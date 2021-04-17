@@ -21,18 +21,20 @@ function invalidNumber(num) {
 function clean(num) {
   return num.replace(/[ ,$%]/g, "");
 }
-// Calculate and Print Results
-function displayPayments() {
+// Calculate Payment
+function calculatePayment() {
   let monthlyInterestRate = ((interestRate / 100) / 12);
   // Calculate Monthly payment
   monthlyPayment = loanAmount *
             (monthlyInterestRate /
             (1 - Math.pow((1 + monthlyInterestRate), (-loanTermInMonth))));
-
+  monthlyPayment = monthlyPayment.toFixed(2);
   totalPayment = (monthlyPayment * loanTermInMonth).toFixed(2);
   totalInterest = (totalPayment - loanAmount).toFixed(2);
-
-  console.log(MSG.MONTHLY_PAYMENT + monthlyPayment.toFixed(2));
+}
+// Print Results
+function displayPayments() {
+  console.log(MSG.MONTHLY_PAYMENT + monthlyPayment);
   console.log(MSG.TOTAL_OF + loanTermInMonth + MSG.PAYMENTS + totalPayment);
   console.log(MSG.TOTAL_INTEREST + totalInterest + "\n");
 }
@@ -84,7 +86,8 @@ while (calculateAgain === 'y') {
     }
     loanTermInMonth = Number(loanTermInYear) * 12;
   }
-
+  // Calculate payment
+  calculatePayment();
   // Printing Results
   displayPayments();
   // Start a New Calculation
