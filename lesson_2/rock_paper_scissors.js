@@ -87,7 +87,7 @@ const WINNING_CHOICES = {
 
 function gameLogic() {
   if (WINNING_CHOICES[playerOneChoice].includes(playerTwoChoice)) {
-    playerOneScore += 1
+    playerOneScore += 1;
     winner = `Player ONE played "${playerOneChoice}" and Player TWO played "${playerTwoChoice}"\n*** PLAYER ONE WINS THIS ROUND! ***\n`;
   } else if (playerOneChoice === playerTwoChoice) {
     winner = `Player ONE played "${playerOneChoice}" and Player TWO played "${playerTwoChoice}"\n*** IT'S A TIE! ***\n`;
