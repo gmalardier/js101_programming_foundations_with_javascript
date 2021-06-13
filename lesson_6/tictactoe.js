@@ -5,6 +5,7 @@ let player1;
 let player2;
 let choicesLeft;
 let winner;
+let userChoice;
 const EMPTY_MARKER = ' ';
 const MARKER_X = 'X';
 const MARKER_O = 'O';
@@ -12,7 +13,6 @@ const MATCH_WIN = 5;
 const COMPUTER_NAME = 'Watt';
 const PLAYER_1 = { name: '', marker: '', gameWin: 0, matchWin: 0 };
 const PLAYER_2 = { name: COMPUTER_NAME, marker: '', gameWin: 0, matchWin: 0 };
-const GAME_SCORES = `${PLAYER_1.name}: ${PLAYER_1.gameWin}, ${PLAYER_2.name}: ${PLAYER_2.gameWin}`;
 
 function prompt(msg) {
   return `=> ${msg}`;
@@ -82,7 +82,7 @@ function playWithFriend() {
   console.log(prompt("Alright, at least you’ll have a chance to win…\n"));
   console.log(prompt("Hi friend! What is your name?"));
   PLAYER_2.name = userInput.question();
-  PLAYER_2.name = usersNameValidation(PLAYER_2.name, "Hum, a name usually contains letters! Let's try again, what is your name?\n")
+  PLAYER_2.name = usersNameValidation(PLAYER_2.name, "Hum, a name usually contains letters! Let's try again, what is your name?\n");
 
   console.log(prompt(`${PLAYER_1.name}, choose your weapon!! 'X' or 'O'?`));
   PLAYER_1.marker = userInput.question();
@@ -135,7 +135,7 @@ function boardChoice() {
     choice[String(square)] = String(square);
   }
   return choice;
-};
+}
 let boardChoices = boardChoice(); //Will first display the grid with numbers for reference
 
 function boardResult() {
@@ -144,7 +144,7 @@ function boardResult() {
     board[String(square)] = EMPTY_MARKER;
   }
   return board;
-};
+}
 let boardResults = boardResult();
 
 function displayBoard(board) {
@@ -229,7 +229,7 @@ function detectWinner(board) {
       board[sq2] === player2.marker &&
       board[sq3] === player2.marker
     ) {
-      return displayWinner('player2');;
+      return displayWinner('player2');
     }
   }
 
@@ -292,20 +292,26 @@ function displayWinner(player) {
   if (player === 'player1') {
     player1.gameWin = player1.gameWin += 1;
     if (player2.name === COMPUTER_NAME) {
-      return winner = "***** You win this round! *****";
+      winner = "***** You win this round! *****";
+      return winner;
     } else if (player1.name === COMPUTER_NAME) {
-      return winner = "***** I win this round! *****";
+      winner = "***** I win this round! *****";
+      return winner;
     } else {
-      return winner = `***** ${player1.name} wins this round! *****`;
+      winner = `***** ${player1.name} wins this round! *****`;
+      return winner;
     }
   } else if (player === 'player2') {
     player2.gameWin = player2.gameWin += 1;
     if (player2.name === COMPUTER_NAME) {
-      return winner = "***** I win this round! *****";
+      winner = "***** I win this round! *****";
+      return winner;
     } if (player1.name === COMPUTER_NAME) {
-      return winner = "***** You win this round! *****";
+      winner = "***** You win this round! *****";
+      return winner;
     } else {
-      return winner = `***** ${player2.name} wins this round! *****`;
+      winner = `***** ${player2.name} wins this round! *****`;
+      return winner;
     }
   }
 }
@@ -344,7 +350,7 @@ function reset() {
 console.clear();
 console.log(`*** Hi there!! Welcome the Tic Tac Toe tournament!! ***\n`);
 PLAYER_1.name = userInput.question(prompt(`My name is ${PLAYER_2.name}, what is your name?\n`));
-PLAYER_1.name = usersNameValidation(PLAYER_1.name, "Hum, a name usually contains letters! Let's try again, what is your name?\n")
+PLAYER_1.name = usersNameValidation(PLAYER_1.name, "Hum, a name usually contains letters! Let's try again, what is your name?\n");
 console.clear();
 console.log(prompt(`Nice to meet you ${PLAYER_1.name}. Let's get the game setup...\n`));
 
@@ -363,7 +369,7 @@ displayBoard(boardChoices);
 //displayBoard(boardResults);
 let playAgain = 'y';
 while (true) {
-  reset()
+  reset();
 
   // Single Game loop
   while (true) {
@@ -374,12 +380,12 @@ while (true) {
     while (true) {
       player1Turn();
       boardResults[player1Choice] = player1.marker;
-      displayBoard(boardResults)
+      displayBoard(boardResults);
       detectWinner(boardResults);
       if (winner) break;
-      allChoicesLeft(boardResults)
+      allChoicesLeft(boardResults);
       if (choicesLeft.length === 0) {
-        displayBoard(boardResults)
+        displayBoard(boardResults);
         break;
       }
 
@@ -389,14 +395,13 @@ while (true) {
       detectWinner(boardResults);
       if (winner) break;
     }
-    
     if (winner) {
       console.log(winner);
     } else {
       console.log("It's a tie!!");
     }
 
-    console.log(`Score: ${PLAYER_1.name}: ${PLAYER_1.gameWin} | ${PLAYER_2.name}: ${PLAYER_2.gameWin}\n`)
+    console.log(`Score: ${PLAYER_1.name}: ${PLAYER_1.gameWin} | ${PLAYER_2.name}: ${PLAYER_2.gameWin}\n`);
     matchWinner(MATCH_WIN);
     if (tournamentWinner) {
       break;
@@ -412,4 +417,4 @@ while (true) {
   if (playAgain === 'n') break;
 }
 
-console.log('\n ** Thanks for playing! ** \n')
+console.log('\n ** Thanks for playing! ** \n');
