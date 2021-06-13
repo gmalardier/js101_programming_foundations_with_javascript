@@ -1,28 +1,25 @@
-// 1. Display the empty gride
-// 2. Ask user to mark a square
-// 3. Computer marks  square
-// 4. Display the updated board
-// 5. If it's a winning board, dispaly the winner
-// 6. if the board is full, display tie
-// 7. If neither player won, and the board is not full, go to #2
-// 8. Play again?
-// 9. If yes, go to #1
-// 10. Goodbye!
+//Variables
+let userInput = require('readline-sync');
+let userOneChoice;
+let computerChoice;
+let choicesLeft;
+let userSymbol = 'X';
+let computerSymbol = 'O';
+let winner;
 
-// Board choice
-let boardChoice = {
-  1: '1',
-  2: '2',
-  3: '3',
-  4: '4',
-  5: '5',
-  6: '6',
-  7: '7',
-  8: '8',
-  9: '9'
+// Board choices
+function resetBoardChoice() {
+  let boardChoice = {};
+    for (let square = 1; square <= 9; square += 1) {
+      boardChoice[String(square)] = String(square);
+    }
+    return boardChoice;
 };
 
+let boardChoice = resetBoardChoice();
 function displayBoardChoice() {
+  console.clear();
+
   console.log('');
   console.log('     |     |');
   console.log(`  ${boardChoice['1']}  |  ${boardChoice['2']}  |  ${boardChoice['3']}  `);
@@ -36,23 +33,23 @@ function displayBoardChoice() {
   console.log(`  ${boardChoice['7']}  |  ${boardChoice['8']}  |  ${boardChoice['9']}  `);
   console.log('     |     |');
   console.log('');
+  console.log(`You are ${userSymbol}. Computer is ${computerSymbol}`);
 }
 
-// --------------------------------------------
-// Board result
-let boardResult = {
-  1: ' ',
-  2: ' ',
-  3: ' ',
-  4: ' ',
-  5: ' ',
-  6: ' ',
-  7: ' ',
-  8: ' ',
-  9: ' '
+function resetBoardResult() {
+  let boardResult = {};
+    for (let square = 1; square <= 9; square += 1) {
+      boardResult[String(square)] = ' ';
+    }
+    winner = '';
+    return boardResult;
 };
 
+let boardResult = resetBoardResult();
+
 function displayBoardResult() {
+  console.clear();
+
   console.log('');
   console.log('     |     |');
   console.log(`  ${boardResult['1']}  |  ${boardResult['2']}  |  ${boardResult['3']}  `);
@@ -68,15 +65,6 @@ function displayBoardResult() {
   console.log('');
 }
 
-
-//Variables
-let userInput = require('readline-sync');
-let userOneChoice;
-let computerChoice;
-let choicesLeft;
-let userSymbol = 'X';
-let computerSymbol = 'O';
-
 // list available spots left.
 function allChoicesLeft() {
   choicesLeft = Object.values(boardChoice).filter(num => {
@@ -87,9 +75,23 @@ function allChoicesLeft() {
 })
 }
 // Validate user input
-function askForChoice(str = `Your turn. Make your choice: `) {
+
+function joinOr(arr, char = ', ', word = 'or') {
+  switch (arr.length) {
+    case 0:
+      return '';
+    case 1:
+      return `${arr[0]}`;
+    case 2:
+      return arr.join(` ${word} `);
+    default:
+      return arr.slice(0, arr.length -1).join(char) + `${char}${word} ` + arr.slice(arr.length -1); 
+}
+}
+
+function askForChoice(str = `Your turn. Make your choice: ${joinOr(choicesLeft)}: `) {
+  allChoicesLeft();
   userOneChoice = userInput.question(str);
-  allChoicesLeft()
   if (choicesLeft.includes(userOneChoice)) {
     return userOneChoice;
   } else {
@@ -104,65 +106,83 @@ function cChoice() {
 }
 
 // Winning logic
-let winner;
-const WIN_CHOICES = {
-  1: [boardResult['1'], boardResult['2'], boardResult['3']],
-  2: [boardResult['4'], boardResult['5'], boardResult['6']],
-  3: [boardResult['7'], boardResult['8'], boardResult['9']],
-  4: [boardResult['1'], boardResult['4'], boardResult['7']],
-  5: [boardResult['2'], boardResult['5'], boardResult['8']],
-  6: [boardResult['3'], boardResult['6'], boardResult['9']],
-  7: [boardResult['1'], boardResult['5'], boardResult['9']],
-  8: [boardResult['3'], boardResult['5'], boardResult['7']],
-}
-
 function winningChoice(symbol) {
-  
+  let WIN_CHOICES = {
+    1: [boardResult['1'], boardResult['2'], boardResult['3']],
+    2: [boardResult['4'], boardResult['5'], boardResult['6']],
+    3: [boardResult['7'], boardResult['8'], boardResult['9']],
+    4: [boardResult['1'], boardResult['4'], boardResult['7']],
+    5: [boardResult['2'], boardResult['5'], boardResult['8']],
+    6: [boardResult['3'], boardResult['6'], boardResult['9']],
+    7: [boardResult['1'], boardResult['5'], boardResult['9']],
+    8: [boardResult['3'], boardResult['5'], boardResult['7']],
+  }
   for (let prop in WIN_CHOICES) {
-    //Value are not past here
-    console.log(WIN_CHOICES[prop])
-    console.log(WIN_CHOICES[prop].every(str => str === symbol))
     if (WIN_CHOICES[prop].every(str => str === symbol)) {
       if (symbol === 'X') {
-        return "You Won!"
+        return winner = "***** You Won! *****";
       } else {
-        return "I won!"
+        return winner = "***** I won! *****";
       }
     }
   }
 }
 
-
-
-
+function playAgainChoice(choice) {
+  while (!['yes', 'no', 'y', 'n'].includes(choice)) {
+    choice = userInput.question('Please type "Yes" or "No": ');
+  }
+  if (['no', 'n'].includes(choice)) {
+    playAgain = false;
+  }
+}
 
 // Show board with numbers available
-displayBoardChoice();
+console.clear();
+console.log(`Welcome to the Tic Tac Toe game.\n`);
+let playAgain = true;
 
-allChoicesLeft();
+console.log(boardChoice);
 
+//Main Loop
+while (playAgain) {
+  displayBoardChoice();
+  allChoicesLeft();
 
-//Loop for players turns
-while (choicesLeft.length >= 1) {
+  //Loop for players turns
+  while (choicesLeft.length > 0) {
+    //Ask user to make their choice
+    askForChoice();
 
-  //Ask user to make their choice
-  askForChoice();
+    // Update Board with user choice
+    boardResult[userOneChoice] = userSymbol;
+    boardChoice[userOneChoice] = userSymbol;
+    
+    winningChoice(userSymbol);
+    if (winner) break;
+    displayBoardResult();
 
-  // Update Board with user choice
-  boardResult[userOneChoice] = userSymbol;
-  boardChoice[userOneChoice] = userSymbol;
-  winningChoice(userSymbol);
-
-  // Update boar with computer choice:
-  //computerChoice()
-  cChoice();
-  boardResult[computerChoice] = computerSymbol;
-  boardChoice[computerChoice] = computerSymbol;
-  winningChoice(computerSymbol);
-
-  displayBoardResult();
+    // Update board with computer choice:
+    cChoice();
+    boardResult[computerChoice] = computerSymbol;
+    boardChoice[computerChoice] = computerSymbol;
+    winningChoice(computerSymbol);
+    if (winner) break;
+    displayBoardResult();
 }
 
 // Result
+displayBoardResult();
+if (winner) {
+  console.log(winner);
+} else {
+  console.log("It's a tie!!");
+}
 
-console.log("It's a tie!!");
+playAgainChoice(userInput.question("\nYou'll you like to play again? Yes/No: ").toLowerCase());
+boardChoice = resetBoardChoice()
+boardResult = resetBoardResult();
+
+}
+
+console.log('\n ** Thanks for playing! **\n')
