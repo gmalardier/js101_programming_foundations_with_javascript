@@ -185,6 +185,7 @@ function joinOr(arr, char = ', ', word = 'or') {
 
 // Player turns
 let player1Choice;
+let player2Choice;
 function player1Turn() {
   if (player1.name === COMPUTER_NAME) {
     let isWinMove = computerTurn(boardResults, player1Choice);
@@ -205,7 +206,6 @@ function player1Turn() {
   return player1Choice;
 }
 
-let player2Choice;
 function player2Turn() {
   if (player2.name === COMPUTER_NAME) {
     let isWinMove = computerTurn(boardResults, player2Choice);
