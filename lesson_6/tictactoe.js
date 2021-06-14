@@ -1,15 +1,16 @@
 //Variables
 let userInput = require('readline-sync');
 let userStart;
-let player1;
-let player2;
+let playFirst; // Temp variable assign to the person who start the game
+let playSecond;// Temp variable assign to the user who do not start the game
 let choicesLeft;
 let winner;
 let userChoice;
 const EMPTY_MARKER = ' ';
 const MARKER_X = 'X';
 const MARKER_O = 'O';
-const MATCH_WIN = 2;
+const MATCH_WIN = 5;
+const MIDDLE_SQUARE = 5;
 const COMPUTER_NAME = 'Watt';
 const PLAYER_1 = { name: '', marker: '', gameWin: 0, matchWin: 0 };
 const PLAYER_2 = { name: COMPUTER_NAME, marker: '', gameWin: 0, matchWin: 0 };
@@ -106,24 +107,24 @@ function whoStarts(user) {
   }
   userStart = userInput.question();
   userStart = userInputValidation(userStart, ['1', '2', '3'], "That's not a correct choice! If you want to win, you need to be more focus!\nThe options are: '1', '2' or '3'\n");
-  setPlayers();
+  setWhoStarts();
 }
 
-function setPlayers() {
+function setWhoStarts() {
   if (userStart === '1') {
-    player1 = PLAYER_1;
-    player2 = PLAYER_2;
+    playFirst = PLAYER_1;
+    playSecond = PLAYER_2;
   } else if (userStart === '2') {
-    player1 = PLAYER_2;
-    player2 = PLAYER_1;
+    playFirst = PLAYER_2;
+    playSecond = PLAYER_1;
   } else {
     let start = randomChoice([1, 2]);
     if (start === 0) {
-      player1 = PLAYER_1;
-      player2 = PLAYER_2;
+      playFirst = PLAYER_1;
+      playSecond = PLAYER_2;
     } else {
-      player1 = PLAYER_2;
-      player2 = PLAYER_1;
+      playFirst = PLAYER_2;
+      playSecond = PLAYER_1;
     }
   }
 }
@@ -184,46 +185,26 @@ function joinOr(arr, char = ', ', word = 'or') {
 }
 
 // Player turns
-let player1Choice;
-function player1Turn() {
-  if (player1.name === COMPUTER_NAME) {
-    let isWinMove = computerTurn(boardResults, player1Choice);
-    if (isWinMove !== player1Choice) {
-      player1Choice = isWinMove;
+let playFirstChoice;
+let playSecondChoice;
+function playTurn(player, first, second) {
+  if (player['name'] === COMPUTER_NAME) {
+    let isWinMove = computerTurn(boardResults, first);
+    if (isWinMove !== first) {
+      first = isWinMove;
     } else {
-      isWinMove = computerDefence(boardResults, player2Choice);
+      isWinMove = computerDefence(boardResults, second);
     }
-    if (isWinMove !== player2Choice) {
-      player1Choice = isWinMove;
+    if (isWinMove !== second) {
+      first = isWinMove;
     } else {
-      player1Choice = computerTurnAlt(player1Choice);
-    }
-  } else {
-    player1Choice = userInput.question(`Your turn ${player1.name}. Make your choice: ${joinOr(allChoicesLeft(boardResults))}: `);
-    player1Choice = userInputValidation(player1Choice, allChoicesLeft(boardResults), "Sorry your input isn't valid, choose try again! ");
-  }
-  return player1Choice;
-}
-
-let player2Choice;
-function player2Turn() {
-  if (player2.name === COMPUTER_NAME) {
-    let isWinMove = computerTurn(boardResults, player2Choice);
-    if (isWinMove !== player2Choice) {
-      player2Choice = isWinMove;
-    } else {
-      isWinMove = computerDefence(boardResults, player1Choice);
-    }
-    if (isWinMove !== player1Choice) {
-      player2Choice = isWinMove;
-    } else {
-      player2Choice = computerTurnAlt(player2Choice);
+      first = computerTurnAlt(first);
     }
   } else {
-    player2Choice = userInput.question(`Your turn ${player2.name}. Make your choice: ${joinOr(allChoicesLeft(boardResults))}: `);
-    player2Choice = userInputValidation(player2Choice, allChoicesLeft(boardResults), "Sorry your input isn't valid, choose try again! ");
+    first = userInput.question(`Your turn ${playFirst.name}. Make your choice: ${joinOr(allChoicesLeft(boardResults))}: `);
+    first = userInputValidation(first, allChoicesLeft(boardResults), "Sorry your input isn't valid, try again! ");
   }
-  return player2Choice;
+  return first;
 }
 
 // Winnig logic
@@ -238,15 +219,15 @@ function detectWinner(board) {
   for (let line = 0; line < winningLines.length; line++) {
     let [sq1, sq2, sq3] = winningLines[line];
     if (
-      board[sq1] === player1.marker && board[sq2] === player1.marker &&
-      board[sq3] === player1.marker
+      board[sq1] === playFirst.marker && board[sq2] === playFirst.marker &&
+      board[sq3] === playFirst.marker
     ) {
-      return displayWinner('player1');
+      return displayWinner('playFirst');
     } else if (
-      board[sq1] === player2.marker && board[sq2] === player2.marker &&
-      board[sq3] === player2.marker
+      board[sq1] === playSecond.marker && board[sq2] === playSecond.marker &&
+      board[sq3] === playSecond.marker
     ) {
-      return displayWinner('player2');
+      return displayWinner('playSecond');
     }
   }
 
@@ -294,32 +275,32 @@ function computerDefence(board, player) {
   return player;
 }
 
-function computerTurnAlt(player) {
+function computerTurnAlt(choice) {
   let is5Available = allChoicesLeft(boardResults);
-  if (is5Available.includes('5')) {
-    player = '5';
+  if (is5Available.includes(MIDDLE_SQUARE)) {
+    choice = MIDDLE_SQUARE;
   } else {
-    player = randomChoice(allChoicesLeft(boardResults));
+    choice = randomChoice(allChoicesLeft(boardResults));
   }
-  return player;
+  return choice;
 }
 
 function displayWinner(player) {
-  if (player === 'player1') {
-    if (player2.name === COMPUTER_NAME) {
+  if (player === 'playFirst') {
+    if (playSecond.name === COMPUTER_NAME) {
       winner = "***** You win this round! *****";
-    } else if (player1.name === COMPUTER_NAME) {
+    } else if (playFirst.name === COMPUTER_NAME) {
       winner = "***** I win this round! *****";
     } else {
-      winner = `***** ${player1.name} wins this round! *****`;
+      winner = `***** ${playFirst.name} wins this round! *****`;
     }
-  } else if (player === 'player2') {
-    if (player2.name === COMPUTER_NAME) {
+  } else if (player === 'playSecond') {
+    if (playSecond.name === COMPUTER_NAME) {
       winner = "***** I win this round! *****";
-    } else if (player1.name === COMPUTER_NAME) {
+    } else if (playFirst.name === COMPUTER_NAME) {
       winner = "***** You win this round! *****";
     } else {
-      winner = `***** ${player2.name} wins this round! *****`;
+      winner = `***** ${playSecond.name} wins this round! *****`;
     }
   }
   return winner;
@@ -337,12 +318,12 @@ function matchWinner(num) {
 }
 
 function playerSwitch() {
-  if (player1 === PLAYER_1) {
-    player1 = PLAYER_2;
-    player2 = PLAYER_1;
+  if (playFirst === PLAYER_1) {
+    playFirst = PLAYER_2;
+    playSecond = PLAYER_1;
   } else {
-    player1 = PLAYER_1;
-    player2 = PLAYER_2;
+    playFirst = PLAYER_1;
+    playSecond = PLAYER_2;
   }
 }
 
@@ -363,12 +344,12 @@ console.log(prompt(`Nice to meet you ${PLAYER_1.name}. Let's get the game setup.
 
 // Game setup
 whoIsPlaying();
-if (player1.name === COMPUTER_NAME) {
-  console.log(prompt(`Alright! I'm the ${player1.marker}, ${player2.name} you're the ${player2.marker}`));
-} else if (player2.name === COMPUTER_NAME) {
-  console.log(prompt(`Alright! ${player1.name}, you're the ${player1.marker}, I'm the ${player2.marker}`));
+if (playFirst.name === COMPUTER_NAME) {
+  console.log(prompt(`Alright! I'm the ${playFirst.marker}, ${playSecond.name} you're the ${playSecond.marker}`));
+} else if (playSecond.name === COMPUTER_NAME) {
+  console.log(prompt(`Alright! ${playFirst.name}, you're the ${playFirst.marker}, I'm the ${playSecond.marker}`));
 } else {
-  console.log(prompt(`Alright! ${player1.name}, you're the ${player1.marker}, ${player2.name} the ${player2.marker}`));
+  console.log(prompt(`Alright! ${playFirst.name}, you're the ${playFirst.marker}, ${playSecond.name} the ${playSecond.marker}`));
 }
 userInput.question(prompt(`First one to win 5 games wins the tournament. If you are ready to start, press 'enter'!`));
 displayBoard(boardChoices);
@@ -385,12 +366,12 @@ while (true) {
 
     // Single turn loop
     while (true) {
-      player1Turn();
-      boardResults[player1Choice] = player1.marker;
+      playFirstChoice = playTurn(playFirst, playFirstChoice, playSecondChoice);
+      boardResults[playFirstChoice] = playFirst.marker;
       displayBoard(boardResults);
       detectWinner(boardResults);
       if (winner) {
-        player1.gameWin += 1;
+        playFirst.gameWin += 1;
         break;
       }
       allChoicesLeft(boardResults);
@@ -399,12 +380,12 @@ while (true) {
         break;
       }
 
-      player2Turn();
-      boardResults[player2Choice] = player2.marker;
+      playSecondChoice = playTurn(playSecond, playSecondChoice,playFirstChoice);
+      boardResults[playSecondChoice] = playSecond.marker;
       displayBoard(boardResults);
       detectWinner(boardResults);
       if (winner) {
-        player2.gameWin += 1;
+        playSecond.gameWin += 1;
         break;
       }
     }
