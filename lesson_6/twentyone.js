@@ -28,8 +28,8 @@ let dealerCards = ['', ''];
 let dealerCardsTotal = 0;
 let dealerTotalWin = 0;
 
+let gameWinner;
 let tournamentWinner;
-let winner;
 
 
 function userInputValidation(choice, choices, errorMsg) {
@@ -53,7 +53,6 @@ function cards(arr, obj) {
   }
   return cardList;
 }
-cardList = cards(CARDS_SUITS, cardsValues);
 
 function shuffle(array) {
   for (let index = array.length - 1; index > 0; index--) {
@@ -106,9 +105,26 @@ function getOneCard(userCards, user, clearScreen) {
   userCards.push(cardList.pop());
 }
 
-function result() {
+function gameResult() {
   let result = console.log(`RESULTS: Player: ${playerCardsTotal} | Dealer: ${dealerCardsTotal}\n`);
   return result;
+}
+function displayWinner() {
+  let winner;
+  if (playerCardsTotal > dealerCardsTotal && playerCardsTotal <= MAX_VALUE) {
+    winner = console.log(`YOU WIN!!\n`);
+    playerTotalWin += 1;
+    gameResult();
+  } else if (dealerCardsTotal > playerCardsTotal &&
+    dealerCardsTotal <= MAX_VALUE) {
+    winner = console.log(`I WIN!!\n`);
+    dealerTotalWin += 1;
+    gameResult();
+  } else if (playerCardsTotal === dealerCardsTotal) {
+    winner = console.log(`IT'S A TIE!!\n`);
+    gameResult();
+  }
+  return winner;
 }
 
 function tournamentResult() {
@@ -116,30 +132,13 @@ function tournamentResult() {
   return tournamentResult;
 }
 function tournamentWin() {
+  tournamentWinner = '';
   if (playerTotalWin === TOURNAMENT_WIN) {
     tournamentWinner = 'YOU';
   } else if (dealerTotalWin === TOURNAMENT_WIN) {
     tournamentWinner = 'I';
   }
   return tournamentWinner;
-}
-
-function displayWinner() {
-  let winner;
-  if (playerCardsTotal > dealerCardsTotal && playerCardsTotal <= MAX_VALUE) {
-    winner = console.log(`YOU WIN!!\n`);
-    playerTotalWin += 1;
-    result();
-  } else if (dealerCardsTotal > playerCardsTotal &&
-    dealerCardsTotal <= MAX_VALUE) {
-    winner = console.log(`I WIN!!\n`);
-    dealerTotalWin += 1;
-    result();
-  } else if (playerCardsTotal === dealerCardsTotal) {
-    winner = console.log(`IT'S A TIE!!\n`);
-    result();
-  }
-  return winner;
 }
 
 function resetGame() {
@@ -149,7 +148,7 @@ function resetGame() {
   dealerCards = ['', ''];
   dealerCardsTotal = 0;
 
-  winner = '';
+  gameWinner = '';
   cardList = cards(CARDS_SUITS, cardsValues);
   cardList = shuffle(cardList);
   dealCards();
@@ -181,14 +180,14 @@ while (true) {
     getOneCard(playerCards, 'player', 'clear');
     playerCardsTotal = calculateCardsTotal(playerCards);
     if (playerCardsTotal > MAX_VALUE) {
-      winner = 'dealer';
+      gameWinner = 'dealer';
       dealerTotalWin += 1;
       break;
     }
     console.log(`\nYour total points is ${playerCardsTotal}\n`);
   }
 
-  if (winner === 'dealer') {
+  if (gameWinner === 'dealer') {
     console.log(`\n!!! BUST !!! You lost!\n`);
   } else {
     //Dealer Turn
@@ -213,17 +212,19 @@ while (true) {
       }
     }
   }
+
   displayWinner();
   tournamentResult();
   tournamentWinner = tournamentWin();
   if (tournamentWinner) {
-    console.log(`*** ${tournamentWinner} WON THE TOURNAMENT! ***`);
-    let playAgain = userInput.question("Would you like to play again? Yes/No: ");
+    console.log(`*** ${tournamentWinner} WON THE TOURNAMENT! ***\n`);
+    let playAgain = userInput.question("Would you like to play again? Yes/No: \n");
     playAgain = userInputValidation(playAgain, ['yes', 'y', 'no', 'n'], "Please type 'Y' for yes or 'N' for no");
     if (playAgain === 'no' || playAgain === 'n') {
       break;
     }
-    tournamentWinner = '';
+    dealerTotalWin = 0;
+    playerTotalWin = 0;
   }
   userInput.question("Press 'enter' to start the next round.");
 }
