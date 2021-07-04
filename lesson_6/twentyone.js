@@ -1,6 +1,7 @@
 let userInput = require('readline-sync');
 
 const MAX_VALUE = 21;
+const TOURNAMENT_WIN = 5;
 
 let cardsValues = {
   Ace: [1, 11],
@@ -21,21 +22,15 @@ const CARDS_SUITS = ['Heart', 'Diamond', 'Club', 'Spade'];
 
 let playerCards = ['', ''];
 let playerCardsTotal = 0;
+let playerTotalWin = 0;
 
 let dealerCards = ['', ''];
 let dealerCardsTotal = 0;
+let dealerTotalWin = 0;
 
+let tournamentWinner;
 let winner;
 
-function reset() {
-  playerCards = ['', ''];
-  playerCardsTotal = 0;
-
-  dealerCards = ['', ''];
-  dealerCardsTotal = 0;
-
-  winner = '';
-}
 
 function userInputValidation(choice, choices, errorMsg) {
   while (true) {
@@ -96,18 +91,6 @@ function calculateCardsTotal(cards) {
 
   return sum;
 }
-// Total calculation before looking at assigent example
-// function calculateCardsTotal(totalValue, arr) {
-//   if (totalValue <= 10) {
-//     cardsValues.Ace = 11;
-//   } else {
-//     cardsValues.Ace = 1;
-//   }
-//   let Total = arr.map(card => card[1]);
-//   Total = cardsTotal.map(element => cardsValues[element]);
-//   Total = Total.reduce((acc, currentValue) => acc + currentValue);
-//   return Total;
-// }
 
 // if HIT => function getOneCard
 function getOneCard(userCards, user, clearScreen) {
@@ -128,14 +111,29 @@ function result() {
   return result;
 }
 
+function tournamentResult() {
+  let tournamentResult = console.log(`TOURNAMENT RESULTS: Player: ${playerTotalWin} | Dealer: ${dealerTotalWin}\n`);
+  return tournamentResult;
+}
+function tournamentWin() {
+  if (playerTotalWin === TOURNAMENT_WIN) {
+    tournamentWinner = 'YOU';
+  } else if (dealerTotalWin === TOURNAMENT_WIN) {
+    tournamentWinner = 'I';
+  }
+  return tournamentWinner;
+}
+
 function displayWinner() {
   let winner;
   if (playerCardsTotal > dealerCardsTotal && playerCardsTotal <= MAX_VALUE) {
     winner = console.log(`YOU WIN!!\n`);
+    playerTotalWin += 1;
     result();
   } else if (dealerCardsTotal > playerCardsTotal &&
-            dealerCardsTotal <= MAX_VALUE) {
+    dealerCardsTotal <= MAX_VALUE) {
     winner = console.log(`I WIN!!\n`);
+    dealerTotalWin += 1;
     result();
   } else if (playerCardsTotal === dealerCardsTotal) {
     winner = console.log(`IT'S A TIE!!\n`);
@@ -144,18 +142,28 @@ function displayWinner() {
   return winner;
 }
 
+function resetGame() {
+  playerCards = ['', ''];
+  playerCardsTotal = 0;
+
+  dealerCards = ['', ''];
+  dealerCardsTotal = 0;
+
+  winner = '';
+  cardList = cards(CARDS_SUITS, cardsValues);
+  cardList = shuffle(cardList);
+  dealCards();
+}
 
 //Game play
 console.clear();
 console.log("Welcome to Twenty-One!\n");
+console.log(`First one to five wins the game!`);
 userInput.question("Press 'enter' when you are ready to start.");
-
 //Main Game loop
 while (true) {
-  reset();
+  resetGame();
   //Set cards
-  cardList = shuffle(cardList);
-  dealCards();
   //Show player cards and first dealer card.
   console.clear();
   console.log(`You have the ${playerCards[0][1]} of ${playerCards[0][0]} and the ${playerCards[1][1]} of ${playerCards[1][0]}`);
@@ -174,6 +182,7 @@ while (true) {
     playerCardsTotal = calculateCardsTotal(playerCards);
     if (playerCardsTotal > MAX_VALUE) {
       winner = 'dealer';
+      dealerTotalWin += 1;
       break;
     }
     console.log(`\nYour total points is ${playerCardsTotal}\n`);
@@ -199,17 +208,23 @@ while (true) {
       }
       if (dealerCardsTotal > MAX_VALUE) {
         console.log(`\n!!! BUST !!! I lost!\n`);
+        playerTotalWin += 1;
         break;
       }
     }
   }
   displayWinner();
-
-  let playAgain = userInput.question("Would you like to play again? Yes/No: ");
-  playAgain = userInputValidation(playAgain, ['yes', 'y', 'no', 'n'], "Please type 'Y' for yes or 'N' for no");
-  if (playAgain === 'no' || playAgain === 'n') {
-    break;
+  tournamentResult();
+  tournamentWinner = tournamentWin();
+  if (tournamentWinner) {
+    console.log(`*** ${tournamentWinner} WON THE TOURNAMENT! ***`);
+    let playAgain = userInput.question("Would you like to play again? Yes/No: ");
+    playAgain = userInputValidation(playAgain, ['yes', 'y', 'no', 'n'], "Please type 'Y' for yes or 'N' for no");
+    if (playAgain === 'no' || playAgain === 'n') {
+      break;
+    }
+    tournamentWinner = '';
   }
-
+  userInput.question("Press 'enter' to start the next round.");
 }
 console.log("\n**** Thanks for Playing! ***\n");
